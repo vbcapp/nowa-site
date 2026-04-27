@@ -1,8 +1,7 @@
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
-  site: 'https://vbcapp.github.io',
-  base: '/nowa-site',
+  site: 'https://nowa.vibes.com.tw',
   trailingSlash: 'always',
   build: {
     format: 'directory',
