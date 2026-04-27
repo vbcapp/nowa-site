@@ -84,12 +84,20 @@ const base = import.meta.env.BASE_URL;
         textNode.parentNode.replaceChild(frag, textNode);
       });
 
-      // --- Scroll reveal ---
+      // --- Scroll reveal (only for below-the-fold elements) ---
       if (!reduce && 'IntersectionObserver' in window) {
-        const targets = document.querySelectorAll(
+        const candidates = document.querySelectorAll(
           'main > section, .post-page article > h2, .post-page article > h3, .post-page article > p, .post-page article > ul, .post-page article > ol, .post-page article > blockquote, .posts-list > li'
         );
-        targets.forEach((el) => el.classList.add('reveal'));
+        const vh = window.innerHeight;
+        const targets = [];
+        candidates.forEach((el) => {
+          const rect = el.getBoundingClientRect();
+          // Skip if any part is already in/above the viewport on first paint
+          if (rect.top < vh * 0.9) return;
+          el.classList.add('reveal');
+          targets.push(el);
+        });
         const io = new IntersectionObserver(
           (entries) => {
             entries.forEach((entry) => {
@@ -99,7 +107,7 @@ const base = import.meta.env.BASE_URL;
               }
             });
           },
-          { threshold: 0.08, rootMargin: '0px 0px -6% 0px' }
+          { threshold: 0.15, rootMargin: '0px 0px -10% 0px' }
         );
         targets.forEach((el) => io.observe(el));
       }
