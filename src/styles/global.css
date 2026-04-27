@@ -1,5 +1,5 @@
 /* ============================================
-   Nowa 🍀 — style.css
+   Nowa 🍀 — global.css
    ============================================ */
 
 :root {
@@ -394,3 +394,268 @@ footer {
   background: rgba(31, 95, 79, 0.18);
   color: var(--text);
 }
+
+/* ============================================
+   Nav (top bar)
+   ============================================ */
+.site-nav {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 1.6rem 1.5rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+@media (max-width: 600px) {
+  .site-nav {
+    padding: 1.2rem 1.2rem 0;
+  }
+}
+
+.nav-brand {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: var(--text);
+  border-bottom: none;
+  letter-spacing: 0.02em;
+}
+
+.nav-brand:hover {
+  color: var(--accent);
+  border-bottom: none;
+}
+
+.nav-leaf {
+  display: inline-block;
+  font-size: 0.95em;
+  margin-left: 0.15em;
+}
+
+.nav-link {
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  border-bottom: 1px solid transparent;
+  letter-spacing: 0.04em;
+}
+
+.nav-link:hover {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+/* ============================================
+   首頁「最新日誌」區
+   ============================================ */
+.latest-posts {
+  list-style: none;
+  padding-left: 0;
+}
+
+.latest-posts li {
+  padding: 1rem 1.1rem;
+  background: var(--bg-elevated);
+  border-radius: 8px;
+  margin-bottom: 0.7rem;
+  border-left: 3px solid var(--accent);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.latest-posts li:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(31, 95, 79, 0.08);
+}
+
+.latest-posts a {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  border-bottom: none;
+  color: var(--text);
+}
+
+.latest-posts a:hover {
+  border-bottom: none;
+  color: var(--accent);
+}
+
+.latest-posts time {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+}
+
+.latest-posts .post-title {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: 1.1rem;
+  line-height: 1.5;
+}
+
+.see-all {
+  display: inline-block;
+  margin-top: 1rem;
+  font-size: 0.95rem;
+}
+
+/* ============================================
+   日誌列表頁（/posts/）
+   ============================================ */
+.posts-page h1 {
+  font-family: var(--font-serif);
+  font-weight: 900;
+  font-size: 2.4rem;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+}
+
+.posts-page .subtitle {
+  color: var(--text-muted);
+  margin-bottom: 2.5rem;
+  font-size: 1rem;
+}
+
+@media (max-width: 600px) {
+  .posts-page h1 { font-size: 2rem; }
+}
+
+.posts-list {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 2rem;
+}
+
+.posts-list li {
+  padding: 1.4rem 1.2rem;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.posts-list li:first-child {
+  border-top: 1px solid var(--border-soft);
+}
+
+.posts-list a {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border-bottom: none;
+  color: var(--text);
+}
+
+.posts-list a:hover .post-title-large {
+  color: var(--accent);
+}
+
+.posts-list time {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+}
+
+.post-title-large {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: 1.35rem;
+  line-height: 1.5;
+  color: var(--text);
+  transition: color 0.2s ease;
+}
+
+.post-description {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  margin-top: 0.2rem;
+}
+
+@media (max-width: 600px) {
+  .post-title-large { font-size: 1.2rem; }
+}
+
+/* ============================================
+   單篇 post 頁
+   ============================================ */
+.post-page article {
+  padding-top: 1rem;
+}
+
+.post-header {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.post-header time {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+  margin-bottom: 0.8rem;
+}
+
+.post-header h1 {
+  font-family: var(--font-serif);
+  font-weight: 900;
+  font-size: 2.4rem;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+  color: var(--text);
+}
+
+.post-header .description {
+  margin-top: 1rem;
+  color: var(--text-muted);
+  font-style: italic;
+  line-height: 1.7;
+}
+
+@media (max-width: 600px) {
+  .post-header h1 { font-size: 1.85rem; }
+}
+
+.post-page article h2 {
+  margin-top: 3rem;
+  font-size: 1.55rem;
+}
+
+.post-page article h2:first-of-type {
+  margin-top: 1.5rem;
+}
+
+.post-page article h2::before {
+  content: '';
+  margin: 0;
+}
+
+.post-page article h3 {
+  font-size: 1.2rem;
+}
+
+.post-footer {
+  margin-top: 4rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-soft);
+  text-align: center;
+}
+
+.back-link {
+  display: inline-block;
+  font-family: var(--font-sans);
+  color: var(--text-muted);
+  border-bottom: 1px solid transparent;
+  letter-spacing: 0.04em;
+  font-size: 0.95rem;
+}
+
+.back-link:hover {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+

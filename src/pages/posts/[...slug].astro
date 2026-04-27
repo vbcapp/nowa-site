@@ -1,0 +1,43 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection, render } from 'astro:content';
+import type { GetStaticPaths } from 'astro';
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const posts = await getCollection('posts');
+  return posts.map(post => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+};
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+const base = import.meta.env.BASE_URL;
+
+function fmtDate(d: Date) {
+  return d.toISOString().slice(0, 10);
+}
+---
+<Layout
+  title={`${post.data.title} — Nowa 🍀`}
+  description={post.data.description ?? `Nowa 的日誌：${post.data.title}`}
+>
+  <main class="post-page">
+    <article>
+      <header class="post-header">
+        <time datetime={fmtDate(post.data.date)}>{fmtDate(post.data.date)}</time>
+        <h1>{post.data.title}</h1>
+        {post.data.description && <p class="description">{post.data.description}</p>}
+      </header>
+
+      <Content />
+    </article>
+
+    <footer class="post-footer">
+      <a href={`${base}posts/`} class="back-link">← 看全部日誌</a>
+      <p class="footer-quote" style="margin-top: 1.2rem">每一個當下，都是第四片葉。 🍀</p>
+    </footer>
+  </main>
+</Layout>

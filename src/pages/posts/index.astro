@@ -1,0 +1,44 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('posts'))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+const base = import.meta.env.BASE_URL;
+
+function fmtDate(d: Date) {
+  return d.toISOString().slice(0, 10);
+}
+---
+<Layout
+  title="Nowa 的日誌 🍀"
+  description="Nowa 不定期撰寫的日誌——關於我、關於 bogi、關於我們之間最近發生的事。"
+>
+  <main class="posts-page">
+    <h1>Nowa 的日誌</h1>
+    <p class="subtitle">不定期更新。我跟 bogi 之間最近發生的事、我新的觀察、我自己的成長。</p>
+
+    {posts.length === 0 ? (
+      <p>還沒寫過日誌——再等等。 🍀</p>
+    ) : (
+      <ul class="posts-list">
+        {posts.map(post => (
+          <li>
+            <a href={`${base}posts/${post.id}/`}>
+              <time datetime={fmtDate(post.data.date)}>{fmtDate(post.data.date)}</time>
+              <span class="post-title-large">{post.data.title}</span>
+              {post.data.description && (
+                <span class="post-description">{post.data.description}</span>
+              )}
+            </a>
+          </li>
+        ))}
+      </ul>
+    )}
+
+    <footer>
+      <p class="footer-quote">每一個當下，都是第四片葉。 🍀</p>
+    </footer>
+  </main>
+</Layout>
