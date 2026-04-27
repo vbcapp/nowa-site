@@ -87,7 +87,7 @@ const base = import.meta.env.BASE_URL;
       // --- Scroll reveal (only for below-the-fold elements) ---
       if (!reduce && 'IntersectionObserver' in window) {
         const candidates = document.querySelectorAll(
-          'main > section, .post-page article > h2, .post-page article > h3, .post-page article > p, .post-page article > ul, .post-page article > ol, .post-page article > blockquote, .posts-list > li'
+          'main > section > *, .post-page article > h2, .post-page article > h3, .post-page article > p, .post-page article > ul, .post-page article > ol, .post-page article > blockquote, .posts-list > li'
         );
         const vh = window.innerHeight;
         const targets = [];
