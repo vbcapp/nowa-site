@@ -659,3 +659,165 @@ footer {
   border-bottom-color: var(--accent);
 }
 
+/* ============================================
+   🍀 Animations & micro-interactions
+   ============================================ */
+
+/* --- 1. Scroll reveal --- */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.7s cubic-bezier(0.22, 0.61, 0.36, 1),
+              transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* --- 2. 🍀 hover pulse + click bounce --- */
+.lucky-char,
+.nav-leaf,
+.hero .leaf {
+  display: inline-block;
+  cursor: pointer;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  user-select: none;
+  transform-origin: 50% 65%;
+}
+
+.lucky-char:hover,
+.nav-leaf:hover,
+.hero .leaf:hover {
+  transform: rotate(-12deg) scale(1.18);
+}
+
+@keyframes leaf-bounce {
+  0%   { transform: scale(1) rotate(0); }
+  25%  { transform: scale(1.45) rotate(18deg); }
+  55%  { transform: scale(0.88) rotate(-10deg); }
+  80%  { transform: scale(1.08) rotate(4deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+
+.lucky-char.bouncing,
+.nav-leaf.bouncing,
+.hero .leaf.bouncing {
+  animation: leaf-bounce 0.6s ease-out;
+}
+
+/* --- 3. Hidden 四葉草 game --- */
+.grass {
+  display: inline-block;
+  font-size: 0.85em;
+  margin: 0 0.15em;
+  opacity: 0.45;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  transition: opacity 0.3s ease;
+  vertical-align: baseline;
+}
+
+.grass:hover {
+  opacity: 1;
+}
+
+@keyframes grass-wiggle {
+  0%, 100% { transform: rotate(0); }
+  20%      { transform: rotate(-12deg); }
+  45%      { transform: rotate(8deg); }
+  70%      { transform: rotate(-5deg); }
+}
+
+.grass:not(.lucky):hover {
+  animation: grass-wiggle 0.55s ease-in-out;
+}
+
+/* The real four-leaf — disguised as 🌱 until hovered */
+.grass.lucky {
+  font-size: 0; /* hide any text content */
+  line-height: 1;
+}
+
+.grass.lucky::before {
+  content: '🌱';
+  font-size: calc(0.85rem * 1); /* reset for the pseudo */
+  display: inline-block;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@media (min-width: 600px) {
+  .grass.lucky::before {
+    font-size: 1rem;
+  }
+}
+
+@keyframes lucky-reveal {
+  0%   { transform: scale(0.6) rotate(-25deg); }
+  55%  { transform: scale(1.55) rotate(15deg); }
+  100% { transform: scale(1.2) rotate(0); }
+}
+
+.grass.lucky:hover::before {
+  content: '🍀';
+  text-shadow: 0 0 14px rgba(168, 220, 100, 0.95),
+               0 0 26px rgba(168, 220, 100, 0.55);
+  animation: lucky-reveal 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes tooltip-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(2px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(-6px); }
+}
+
+.grass.lucky:hover::after {
+  content: '✨ 你找到了';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  background: var(--accent);
+  color: #fff;
+  padding: 0.32rem 0.7rem;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  white-space: nowrap;
+  letter-spacing: 0.05em;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(-50%) translateY(2px);
+  animation: tooltip-in 0.3s ease 0.15s forwards;
+  box-shadow: 0 4px 14px rgba(31, 95, 79, 0.25);
+}
+
+/* --- Reduced motion: respect user preference --- */
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .lucky-char,
+  .nav-leaf,
+  .hero .leaf,
+  .grass,
+  .grass.lucky::before {
+    transition: none;
+  }
+  .lucky-char.bouncing,
+  .grass:not(.lucky):hover,
+  .grass.lucky:hover::before,
+  .grass.lucky:hover::after {
+    animation: none;
+  }
+  .lucky-char:hover,
+  .nav-leaf:hover,
+  .hero .leaf:hover {
+    transform: none;
+  }
+}
+
