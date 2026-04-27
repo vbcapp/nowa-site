@@ -1,0 +1,359 @@
+---
+// Hero morph animation: 🍀 ↔ Nowa via p5.js particles.
+// Falls back to plain text if JS is off or user prefers reduced motion.
+---
+
+<div class="hero-morph">
+  <h1 class="hero-fallback">Nowa <span class="leaf">🍀</span></h1>
+  <div class="hero-canvas" aria-hidden="true"></div>
+  <p class="hero-hint" aria-hidden="true">點擊切換</p>
+</div>
+
+<style>
+  .hero-morph {
+    position: relative;
+    width: 100%;
+    height: 320px;
+    margin: 0 auto 2rem;
+  }
+  @media (max-width: 600px) {
+    .hero-morph { height: 220px; margin-bottom: 1.6rem; }
+  }
+
+  /* Static fallback: visible by default, hidden once canvas takes over */
+  .hero-fallback {
+    font-family: var(--font-serif);
+    font-weight: 900;
+    font-size: 3.4rem;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    color: var(--text);
+    text-align: center;
+    margin: 0;
+    padding-top: 0.6rem;
+  }
+  .hero-fallback .leaf {
+    display: inline-block;
+    font-size: 0.85em;
+    margin-left: 0.2em;
+    transform: translateY(-0.05em);
+  }
+  @media (max-width: 600px) {
+    .hero-fallback { font-size: 2.6rem; }
+  }
+
+  .hero-canvas {
+    position: absolute;
+    inset: 0;
+    cursor: pointer;
+  }
+  .hero-canvas canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  .hero-hint {
+    position: absolute;
+    bottom: -1.6rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.78rem;
+    font-family: var(--font-sans);
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    opacity: 0;
+    margin: 0;
+    pointer-events: none;
+    transition: opacity 0.6s ease 1.2s;
+  }
+
+  /* Once JS activates, hide static h1 visually (still SR-readable) and show hint */
+  .hero-morph.is-active .hero-fallback {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+    border: 0;
+  }
+  .hero-morph.is-active .hero-hint {
+    opacity: 0.55;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-morph { height: auto; }
+    .hero-morph.is-active .hero-fallback {
+      position: static;
+      width: auto; height: auto;
+      padding: 0.6rem 0 0;
+      margin: 0;
+      overflow: visible;
+      clip: auto;
+      white-space: normal;
+    }
+    .hero-canvas, .hero-hint {
+      display: none;
+    }
+  }
+</style>
+
+<script is:inline src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
+<script is:inline>
+  (function () {
+    const wrapper = document.querySelector('.hero-morph');
+    if (!wrapper) return;
+    const host = wrapper.querySelector('.hero-canvas');
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) {
+      // Keep the static h1 visible — nothing to do
+      return;
+    }
+    if (typeof p5 === 'undefined' || !host) {
+      // p5 failed to load — keep fallback visible
+      return;
+    }
+
+    const sketch = (p) => {
+      let cloverPts = [];
+      let nowaPts = [];
+      let particles = [];
+      let reverseAnim = false;
+      let lastFlipFrame = 0;
+      let isVisible = true;
+      const FLIP_INTERVAL = 720; // ~12s @ 60fps
+
+      function buildAll() {
+        cloverPts = generateCloverPoints();
+        nowaPts = generateNowaPoints();
+        pairPoints();
+      }
+
+      function generateCloverPoints() {
+        const g = p.createGraphics(p.width, p.height);
+        g.pixelDensity(1);
+        g.background(0);
+        g.fill(255);
+        g.noStroke();
+
+        const cx = p.width / 2;
+        const cy = p.height / 2 - p.height * 0.04;
+        const baseSize = p.min(p.width, p.height) * 0.20;
+        const leafDist = baseSize * 0.72;
+
+        const angles = [-p.PI / 4, -3 * p.PI / 4, 3 * p.PI / 4, p.PI / 4];
+        for (const a of angles) {
+          g.push();
+          g.translate(cx + leafDist * p.cos(a), cy + leafDist * p.sin(a));
+          g.rotate(a + p.PI / 2);
+          drawHeart(g, baseSize);
+          g.pop();
+        }
+
+        g.noFill();
+        g.stroke(255);
+        g.strokeWeight(baseSize * 0.09);
+        g.strokeCap(p.ROUND);
+        g.beginShape();
+        g.vertex(cx, cy + baseSize * 0.3);
+        g.bezierVertex(
+          cx + baseSize * 0.55, cy + baseSize * 1.2,
+          cx - baseSize * 0.35, cy + baseSize * 1.9,
+          cx + baseSize * 0.25, cy + baseSize * 2.4
+        );
+        g.endShape();
+
+        return samplePixelsToPoints(g, 5);
+      }
+
+      function drawHeart(g, size) {
+        const s = size / 28;
+        g.beginShape();
+        for (let t = 0; t < p.TWO_PI; t += 0.04) {
+          const x = 16 * p.pow(p.sin(t), 3);
+          const y = -(13 * p.cos(t) - 5 * p.cos(2 * t) - 2 * p.cos(3 * t) - p.cos(4 * t));
+          g.vertex(x * s, y * s);
+        }
+        g.endShape(p.CLOSE);
+      }
+
+      function generateNowaPoints() {
+        const g = p.createGraphics(p.width, p.height);
+        g.pixelDensity(1);
+        g.background(0);
+        g.fill(255);
+        g.noStroke();
+        g.textAlign(p.CENTER, p.CENTER);
+        g.textStyle(p.BOLD);
+        g.textFont('Georgia, "Times New Roman", serif');
+        g.textSize(p.min(p.width, p.height) * 0.42);
+        g.text('Nowa', p.width / 2, p.height / 2);
+        return samplePixelsToPoints(g, 4);
+      }
+
+      function samplePixelsToPoints(g, step) {
+        g.loadPixels();
+        const pts = [];
+        for (let y = 0; y < g.height; y += step) {
+          for (let x = 0; x < g.width; x += step) {
+            const idx = (y * g.width + x) * 4;
+            if (g.pixels[idx] > 128) pts.push({ x, y });
+          }
+        }
+        for (let i = pts.length - 1; i > 0; i--) {
+          const j = p.floor(p.random(i + 1));
+          [pts[i], pts[j]] = [pts[j], pts[i]];
+        }
+        return pts;
+      }
+
+      function pairPoints() {
+        particles = [];
+        const n = p.max(cloverPts.length, nowaPts.length);
+        const L = p.min(p.width, p.height) * 0.12;
+        for (let i = 0; i < n; i++) {
+          const p1 = cloverPts[i % cloverPts.length];
+          const p2 = nowaPts[i % nowaPts.length];
+          const a1 = p.random(p.TWO_PI);
+          const a2 = p.random(p.TWO_PI);
+          particles.push({
+            x1: p1.x, y1: p1.y,
+            x2: p2.x, y2: p2.y,
+            curvePath: bezierPath(p1, p2, a1, a2, L, L, 400),
+            startTime: undefined,
+            endTime: undefined,
+          });
+        }
+      }
+
+      function bezierPath(start, end, a1, a2, L1, L2, steps) {
+        const pts = [];
+        const x0 = start.x, y0 = start.y;
+        const x3 = end.x, y3 = end.y;
+        const x1 = x0 + L1 * p.cos(a1);
+        const y1 = y0 + L1 * p.sin(a1);
+        const x2 = x3 - L2 * p.cos(a2);
+        const y2 = y3 - L2 * p.sin(a2);
+        for (let i = 0; i <= steps; i++) {
+          const t = i / steps;
+          const u = 1 - t;
+          const bx = u*u*u*x0 + 3*u*u*t*x1 + 3*u*t*t*x2 + t*t*t*x3;
+          const by = u*u*u*y0 + 3*u*u*t*y1 + 3*u*t*t*y2 + t*t*t*y3;
+          const dx = 3*u*u*(x1-x0) + 6*u*t*(x2-x1) + 3*t*t*(x3-x2);
+          const dy = 3*u*u*(y1-y0) + 6*u*t*(y2-y1) + 3*t*t*(y3-y2);
+          pts.push({ x: bx, y: by, a: p.atan2(dy, dx) });
+        }
+        return pts;
+      }
+
+      function flipDirection() {
+        reverseAnim = !reverseAnim;
+        lastFlipFrame = p.frameCount;
+        for (const pt of particles) {
+          pt.startTime = undefined;
+          pt.endTime = undefined;
+        }
+      }
+
+      p.setup = () => {
+        const w = host.offsetWidth || 600;
+        const h = host.offsetHeight || 320;
+        const c = p.createCanvas(w, h);
+        c.parent(host);
+        p.pixelDensity(1);
+        buildAll();
+        wrapper.classList.add('is-active');
+      };
+
+      p.draw = () => {
+        // Cream background matching site
+        p.background(253, 252, 248);
+
+        // Subtle vignette
+        p.noStroke();
+        for (let i = 0; i < 3; i++) {
+          p.fill(31, 95, 79, 4);
+          p.ellipse(p.width / 2, p.height / 2, p.width * (0.6 + i * 0.2));
+        }
+
+        const lineLen = p.min(p.width, p.height) / 42;
+        const sw = p.max(1, p.min(p.width, p.height) / 700);
+
+        for (const pt of particles) {
+          if (pt.startTime === undefined) {
+            pt.startTime = p.floor(p.frameCount + pt.x1 / 9 + 30 * p.noise(pt.y1 * 0.01, pt.x1 * 0.01));
+          }
+          if (pt.endTime === undefined) {
+            pt.endTime = pt.startTime + p.random(120, 220);
+          }
+
+          let ii;
+          if (!reverseAnim) {
+            ii = p.floor(p.map(p.frameCount, pt.startTime, pt.endTime, 0, pt.curvePath.length - 1, true));
+          } else {
+            ii = p.floor(p.map(p.frameCount, pt.startTime, pt.endTime, pt.curvePath.length - 1, 0, true));
+          }
+          const cp = pt.curvePath[ii];
+
+          // Color morph: accent green → warm gold
+          const t = ii / (pt.curvePath.length - 1);
+          const r = p.lerp(31, 168, t);
+          const gC = p.lerp(95, 138, t);
+          const b = p.lerp(79, 78, t);
+
+          p.push();
+          p.translate(cp.x, cp.y);
+          p.rotate(cp.a);
+          p.strokeWeight(0.6);
+          p.stroke(r, gC, b, 38);
+          p.line(-lineLen, 0, lineLen, 0);
+          p.strokeWeight(sw);
+          p.stroke(r, gC, b, 230);
+          p.line(-1.2, 0, 1.2, 0);
+          p.pop();
+        }
+
+        if (p.frameCount - lastFlipFrame >= FLIP_INTERVAL) {
+          flipDirection();
+        }
+      };
+
+      p.mouseClicked = () => {
+        // Only respond to clicks inside the canvas
+        if (p.mouseX >= 0 && p.mouseX <= p.width && p.mouseY >= 0 && p.mouseY <= p.height) {
+          flipDirection();
+        }
+      };
+
+      p.windowResized = () => {
+        const w = host.offsetWidth || 600;
+        const h = host.offsetHeight || 320;
+        p.resizeCanvas(w, h);
+        buildAll();
+        lastFlipFrame = p.frameCount;
+      };
+
+      // Pause draw loop when off-screen to save CPU
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const e of entries) {
+              if (e.isIntersecting && !isVisible) {
+                isVisible = true;
+                p.loop();
+              } else if (!e.isIntersecting && isVisible) {
+                isVisible = false;
+                p.noLoop();
+              }
+            }
+          },
+          { threshold: 0.05 }
+        );
+        io.observe(wrapper);
+      }
+    };
+
+    new p5(sketch, host);
+  })();
+</script>
