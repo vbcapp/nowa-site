@@ -59,109 +59,52 @@ Bogi 會在小聚前根據大家寫的「你想獲得什麼」「擅長什麼」
 
 ---
 
-# 📝 報名表單
+<div align="center" style="margin: 64px 0 48px;">
+  <h2 style="font-size: 30px; line-height: 1.45; margin: 0 0 10px; font-weight: 700; letter-spacing: 0.02em;">準備好見面了嗎？</h2>
+  <p style="color: #6b6760; font-size: 17px; margin: 0 0 32px; line-height: 1.7;">
+    5 分鐘填完，幫你媒合到對的桌 🤝
+  </p>
+  <p style="margin: 0;">
+    <a href="https://aiteachermeetup.zeabur.app/" class="meetup-cta" target="_blank" rel="noopener">📝 我要報名 5/15 AI 講師小聚</a>
+  </p>
+  <p style="color: #999; font-size: 13px; margin: 18px 0 0;">
+    （表單裡有完整轉帳資訊與三步驟）
+  </p>
+</div>
 
-> ⚙️ **目前這份是表單規格設計稿**——Bogi 等等會用 Notion 串接成可實際提交的版本。
-> 想先卡位的朋友，可以**直接加 Bogi 的 LINE：`cecelove`** 跟他說一聲。
-
-## Part 1 — 基本資料
-
-**1. 全名** <span style="color:#dc2626">*</span>
-> （請填真實姓名，作為轉帳核對使用）
-```
-➜ ____________________________________
-```
-
-**2. 生理性別** <span style="color:#dc2626">*</span>
-- ⬜ 男
-- ⬜ 女
-
-**3. Email** <span style="color:#dc2626">*</span>
-```
-➜ ____________________________________
-```
-
-**4. 電話號碼** <span style="color:#dc2626">*</span>
-```
-➜ ____________________________________
-```
-
-**5. 年齡層**
-- ⬜ 20 歲以下
-- ⬜ 21–25
-- ⬜ 26–30
-- ⬜ 31–35
-- ⬜ 36–40
-- ⬜ 41–45
-- ⬜ 45 以上
-
----
-
-## Part 2 — 小聚分組問卷
-
-> 嗨！歡迎報名 AI 講師小聚 🎉
-> 為了讓這次的交流更有品質，我會根據你在這份報名表中填寫的內容**進行適當的分組**，讓組內成員的興趣、專業、與想討論的議題能夠互相激盪。
-> 請花一點時間認真填寫，你的回答會直接影響到分組的精準度喔！
-
-**6. 姓名／藝名** <span style="color:#dc2626">*</span>
-> （請填寫你希望在小聚中**被稱呼的名字**）
-```
-➜ ____________________________________
-```
-
-**7. 參加本次小聚，你想獲得什麼？** <span style="color:#dc2626">*</span>
-> （可以是一個想法、一個問題、一個答案，或是想要的交流方向。歡迎具體一點，越清楚越能幫你媒合到對的夥伴）
-```
-➜ ____________________________________
-   ____________________________________
-   ____________________________________
-```
-
-**8. 你最擅長／正在教學／想教學的 AI 領域** <span style="color:#dc2626">*</span>
-> （可複選或自由填寫）
-- ⬜ Prompt Engineering
-- ⬜ AI 繪圖
-- ⬜ ChatGPT 應用
-- ⬜ AI Agent
-- ⬜ 企業導入
-- ⬜ 教育應用
-- ⬜ 影音生成
-- ⬜ 程式開發 / Vibecoding
-- ⬜ 其他：`______________________`
-
-**9. 授課經驗簡述** <span style="color:#dc2626">*</span>
-> （不論你是已經授課多年的講師、剛開始嘗試的新手，或是還沒開始但有意願想成為講師的朋友，都歡迎分享。例如：教過幾場、面對哪些對象、目前所在階段）
-```
-➜ ____________________________________
-   ____________________________________
-   ____________________________________
-```
-
----
-
-## Part 3 — 報名後三步驟
-
-報名完成後，請務必完成這三件事：
-
-### 1️⃣ 加 Bogi 的 LINE
-**LINE ID：`cecelove`**
-（加好友後跟他說「我是 AI 講師小聚報名的 ___（姓名）」）
-
-### 2️⃣ 轉帳 **300 元**
-
-| 項目 | 內容 |
-|---|---|
-| **戶名** | 林渤浚 |
-| **收款銀行** | 連線商業銀行（824）— 總行（6880） |
-| **收款帳號** | `111000897145` |
-| **聯絡電話** | 0967281129 |
-
-### 3️⃣ 回填轉帳帳號後五碼
-**10. 完整問卷帳號後五碼**
-> 💡 完成轉帳後，請填寫您**轉帳帳號的後五碼**，方便核對。也可以稍後補填。
-```
-➜ _______
-```
+<style>
+  .meetup-cta {
+    display: inline-block;
+    background: #4a7c59;
+    color: #fff !important;
+    padding: 16px 36px;
+    border-radius: 999px;
+    font-size: 17px;
+    font-weight: 600;
+    text-decoration: none !important;
+    box-shadow: 0 0 0 0 rgba(74,124,89,0.5), 0 4px 12px rgba(74,124,89,0.25);
+    animation: meetup-breathe 2.4s ease-in-out infinite;
+    transition: transform .15s, box-shadow .15s;
+  }
+  .meetup-cta:hover {
+    transform: translateY(-2px);
+    animation-play-state: paused;
+    box-shadow: 0 0 0 18px rgba(74,124,89,0), 0 8px 22px rgba(74,124,89,0.4);
+  }
+  @keyframes meetup-breathe {
+    0%, 100% {
+      transform: scale(1);
+      box-shadow: 0 0 0 0 rgba(74,124,89,0.5), 0 4px 12px rgba(74,124,89,0.25);
+    }
+    50% {
+      transform: scale(1.04);
+      box-shadow: 0 0 0 14px rgba(74,124,89,0), 0 6px 18px rgba(74,124,89,0.35);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .meetup-cta { animation: none; }
+  }
+</style>
 
 ---
 
